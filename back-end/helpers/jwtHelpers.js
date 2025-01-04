@@ -1,6 +1,8 @@
 const JWT = require("jsonwebtoken");
 const createError = require("http-errors");
+const db = require("../models/indexStart");
 
+const Assignment = db.assignments
 
 module.exports = {
     signAccessToken: (UserId, userRole) => {
@@ -19,19 +21,28 @@ module.exports = {
         })
     },
 
-    // middlware to verify accesstoken
     verifyAccessToken: (req, res, next) => {
-        if (!req.headers["authorization"]) return next(createError.Unauthorized());
-        const authHeader = req.headers['authorization'];
-        const bearerToken = authHeader.split(' ');
+        if (!req.headers["authorization"]) {
+            return next(createError.Unauthorized("Authorization header is missing."));
+        }
+
+        const authHeader = req.headers["authorization"];
+        const bearerToken = authHeader.split(" ");
         const token = bearerToken[1];
+
         JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
             if (err) {
-                return next(createError.Unauthorized())
+                return next(createError.Unauthorized("Invalid token."));
             }
-            req.payload = payload;
-            next()
-        })
+
+            // Attach payload directly to req.user
+            req.user = {
+                id: payload.UserId,
+                role: payload.role,
+            };
+
+            next();
+        });
     },
 
 
@@ -67,8 +78,7 @@ module.exports = {
 
     restrict: (...allowedRoles) => {
         return (req, res, next) => {
-            const userRole = req.payload.role
-            console.log(userRole);
+            const userRole = req.user.role
 
             if (!userRole || allowedRoles.includes(userRole)) {
                 return next(
@@ -77,5 +87,32 @@ module.exports = {
             }
             next()
         }
-    }
+    },
+
+    validateLecturerAccess: async (req, res, next) => {
+        try {
+            const lecturerId = req.user.id;
+            const assignmentId = req.params.assignmentId;
+            console.log('lecturer_id', lecturerId);
+
+
+            const assignment = await Assignment.findOne({
+                where: { assignment_id: assignmentId, lecturer_id: lecturerId },
+            });
+
+            console.log(assignment);
+
+
+            if (!assignment) {
+                return res.status(403).send({
+                    message: "You are not authorized to access or modify this assignment.",
+                });
+            }
+
+            next(); // Proceed if validation passes
+        } catch (error) {
+            next(error);
+        }
+    },
+
 }

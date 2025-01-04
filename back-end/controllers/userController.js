@@ -129,5 +129,24 @@ module.exports = {
         } catch (error) {
             next(error);
         }
+    },
+
+    deleteUser: async (req, res, next) => {
+        try {
+            const { userId } = req.params; z
+
+            const user = await User.findByPk(userId);
+
+            if (!user) {
+                throw createError.NotFound(`User with ID ${userId} not found.`);
+            }
+
+            await user.destroy(); // Delete the user from the database
+
+            res.status(200).send({ message: `User with ID ${userId} has been deleted.` });
+        } catch (error) {
+            next(error);
+        }
     }
+
 };

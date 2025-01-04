@@ -30,17 +30,17 @@ db.reports = require('./reportsModel')(sequelize, DataTypes);
 
 // Define relationships
 
-// Users and Assignments
-db.users.hasMany(db.assignments, { foreignKey: 'user_id' });
-db.assignments.belongsTo(db.users, { foreignKey: 'user_id' });
+// Users and Assignments (Lecturer relationship)
+db.users.hasMany(db.assignments, { foreignKey: 'lecturer_id', as: 'assignments' });
+db.assignments.belongsTo(db.users, { foreignKey: 'lecturer_id', as: 'lecturer' });
 
 // Assignments and Submissions
 db.assignments.hasMany(db.submissions, { foreignKey: 'assignment_id' });
 db.submissions.belongsTo(db.assignments, { foreignKey: 'assignment_id' });
 
 // Users and Submissions
-db.users.hasMany(db.submissions, { foreignKey: 'user_id' });
-db.submissions.belongsTo(db.users, { foreignKey: 'user_id' });
+db.users.hasMany(db.submissions, { foreignKey: 'student_id', as: 'submissions' });
+db.submissions.belongsTo(db.users, { foreignKey: 'student_id', as: 'student' });
 
 // Users and Reports
 db.users.hasMany(db.reports, { foreignKey: 'user_id' });

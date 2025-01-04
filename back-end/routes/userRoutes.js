@@ -14,4 +14,6 @@ routes.get('/getuser/:userId', verifyAccessToken, userController.getUserById);
 
 routes.patch('/updateuser/:userId', verifyAccessToken, userController.updateUserRole);
 
+routes.delete('/deleteuser/:userId', verifyAccessToken, restrict('admin'), userController.deleteUser);
+
 module.exports = routes;
