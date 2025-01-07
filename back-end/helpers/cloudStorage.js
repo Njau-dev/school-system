@@ -1,6 +1,5 @@
 const BackblazeB2 = require('backblaze-b2');
 const axios = require('axios');
-const stream = require('stream');
 const fs = require('fs')
 
 // Initialize B2 instance

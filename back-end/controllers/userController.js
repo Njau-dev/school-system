@@ -43,7 +43,6 @@ module.exports = {
 
             // Check if the user exists
             const user = await User.findOne({ where: { email } });
-            console.log(email, password);
 
             if (!user) {
                 throw createError.NotFound("User not registered");
