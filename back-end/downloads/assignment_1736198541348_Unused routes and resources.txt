@@ -1,0 +1,6 @@
+Unused routes and resources
+
+/profile
+/wishlist
+/reviews/id
+

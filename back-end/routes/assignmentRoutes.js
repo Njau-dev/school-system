@@ -15,6 +15,9 @@ routes.get('/assignments/lecturer/:lecturerId', verifyAccessToken, assignmentCon
 //fetch specific assignment
 routes.get('/assignment/:assignmentId', verifyAccessToken, assignmentController.fetchSpecificAssignment)
 
+//fetch summarry for a specific assignment
+routes.get('/assignments/:assignmentId/summary', assignmentController.fetchAssignmentSummary)
+
 routes.put("/assignments/:assignmentId", verifyAccessToken, auth.restrict('student', 'admin'), auth.validateLecturerAccess, assignmentController.updateAssignment);
 
 routes.delete("/assignments/:assignmentId", verifyAccessToken, auth.restrict('student', 'admin'), auth.validateLecturerAccess, assignmentController.deleteAssignment);

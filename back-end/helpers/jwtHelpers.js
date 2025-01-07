@@ -93,14 +93,11 @@ module.exports = {
         try {
             const lecturerId = req.user.id;
             const assignmentId = req.params.assignmentId;
-            console.log('lecturer_id', lecturerId);
 
 
             const assignment = await Assignment.findOne({
                 where: { assignment_id: assignmentId, lecturer_id: lecturerId },
             });
-
-            console.log(assignment);
 
 
             if (!assignment) {

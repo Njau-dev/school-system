@@ -1,5 +1,7 @@
 const db = require("../models/indexStart");
 const createError = require("http-errors");
+const Sequelize = require('sequelize');
+
 
 // Models
 const Assignment = db.assignments;
@@ -155,8 +157,8 @@ module.exports = {
                         include: [
                             {
                                 model: User,
-                                as: 'student', // Student association
-                                attributes: ['name', 'email'], // Student details
+                                as: 'student',
+                                attributes: ['name', 'email'],
                             },
                         ],
                         attributes: ['grade', 'graded', 'student_id'], // Submission details
@@ -252,6 +254,35 @@ module.exports = {
             });
         } catch (error) {
             next(error);
+        }
+    },
+
+    //admin summarry
+    fetchAssignmentSummary: async (req, res) => {
+        const { assignmentId } = req.params;
+
+        try {
+            // Fetch total submissions for the assignment
+            const totalSubmissions = await Submission.count({
+                where: { assignment_id: assignmentId },
+            });
+
+            // Calculate the mean grade
+            const meanGradeResult = await Submission.findOne({
+                where: { assignment_id: assignmentId },
+                attributes: [[Sequelize.fn('AVG', Sequelize.col('grade')), 'meanGrade']],
+            });
+
+            const meanGrade = meanGradeResult ? meanGradeResult.dataValues.meanGrade : null;
+
+            res.status(200).json({
+                assignmentId,
+                totalSubmissions,
+                meanGrade: meanGrade ? parseFloat(meanGrade).toFixed(2) : 'N/A',
+            });
+        } catch (error) {
+            console.error("Error fetching assignment summary:", error.message);
+            res.status(500).json({ message: "Error fetching assignment summary." });
         }
     },
 

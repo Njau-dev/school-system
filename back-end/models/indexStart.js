@@ -35,16 +35,20 @@ db.users.hasMany(db.assignments, { foreignKey: 'lecturer_id', as: 'assignments' 
 db.assignments.belongsTo(db.users, { foreignKey: 'lecturer_id', as: 'lecturer' });
 
 // Assignments and Submissions
-db.assignments.hasMany(db.submissions, { foreignKey: 'assignment_id' });
-db.submissions.belongsTo(db.assignments, { foreignKey: 'assignment_id' });
+db.assignments.hasMany(db.submissions, { foreignKey: 'assignment_id', as: 'submissions' });
+db.submissions.belongsTo(db.assignments, { foreignKey: 'assignment_id', as: 'assignment' });
 
 // Users and Submissions
 db.users.hasMany(db.submissions, { foreignKey: 'student_id', as: 'submissions' });
 db.submissions.belongsTo(db.users, { foreignKey: 'student_id', as: 'student' });
 
-// Users and Reports
-db.users.hasMany(db.reports, { foreignKey: 'user_id' });
-db.reports.belongsTo(db.users, { foreignKey: 'user_id' });
+// Reports and Users (Student relationship)
+db.users.hasMany(db.reports, { foreignKey: "student_id", as: "studentReports" });
+db.reports.belongsTo(db.users, { foreignKey: "student_id", as: "student" });
+
+// Reports and Users (Lecturer relationship)
+db.users.hasMany(db.reports, { foreignKey: "lecturer_id", as: "lecturerReports" });
+db.reports.belongsTo(db.users, { foreignKey: "lecturer_id", as: "lecturer" });
 
 // Synchronize the database
 db.sequelize.sync({ force: false }) // No dropping existing tables

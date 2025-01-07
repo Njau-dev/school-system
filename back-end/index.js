@@ -6,6 +6,7 @@ const app = express()
 const userRoutes = require('./routes/userRoutes')
 const assignmentRoutes = require('./routes/assignmentRoutes')
 const submitRoutes = require('./routes/submissionRoutes')
+const reportRoutes = require('./routes/reportRoutes')
 
 app.use(cors({
     origin: ['http://localhost:5175', 'http://localhost:5173'],
@@ -19,6 +20,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(userRoutes);
 app.use(assignmentRoutes)
 app.use(submitRoutes)
+app.use(reportRoutes)
 
 //handling 404 error
 app.use((req, res, next) => {

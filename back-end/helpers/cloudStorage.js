@@ -1,5 +1,9 @@
 const BackblazeB2 = require('backblaze-b2');
+const axios = require('axios');
+const stream = require('stream');
+const fs = require('fs')
 
+// Initialize B2 instance
 const initializeB2 = async () => {
     const b2 = new BackblazeB2({
         applicationKeyId: process.env.B2_KEY_ID,
@@ -10,7 +14,7 @@ const initializeB2 = async () => {
     return b2;
 };
 
-
+// Upload a file to B2
 const uploadToB2 = async (b2, bucketName, fileData, fileName) => {
     // Get bucket details
     const bucket = await b2.getBucket({ bucketName });
@@ -32,5 +36,85 @@ const uploadToB2 = async (b2, bucketName, fileData, fileName) => {
     return fileUrl;
 };
 
+// Function to authorize the B2 account
+const authorizeAccount = async (keyId, applicationKey) => {
+    const url = "https://api.backblazeb2.com/b2api/v2/b2_authorize_account";
+    try {
+        const response = await axios.get(url, {
+            auth: {
+                username: keyId,
+                password: applicationKey,
+            },
+        });
 
-module.exports = { initializeB2, uploadToB2 }
+        const data = response.data;
+        return {
+            authorizationToken: data.authorizationToken,
+            apiUrl: data.apiUrl,
+            downloadUrl: data.downloadUrl,
+        };
+    } catch (error) {
+        console.error(`Error authorizing account: ${error.response?.status} - ${error.response?.data}`);
+        throw new Error("Failed to authorize Backblaze B2 account.");
+    }
+};
+
+// Function to get download authorization token
+const getDownloadAuthorization = async (authToken, apiUrl, bucketId, fileNamePrefix = "", validDuration = 6000) => {
+    const url = `${apiUrl}/b2api/v2/b2_get_download_authorization`;
+    try {
+        const response = await axios.post(
+            url,
+            {
+                bucketId,
+                fileNamePrefix,
+                validDurationInSeconds: validDuration,
+            },
+            {
+                headers: {
+                    Authorization: authToken,
+                },
+            }
+        );
+
+        return response.data.authorizationToken;
+    } catch (error) {
+        console.error(`Error getting download authorization: ${error.response?.status} - ${error.response?.data}`);
+        throw new Error("Failed to get download authorization.");
+    }
+};
+
+// Function to download a file
+const downloadFile = async (fullFileUrl, authorizationToken, localPath) => {
+    try {
+        const response = await axios.get(fullFileUrl, {
+            headers: {
+                Authorization: authorizationToken,
+            },
+            responseType: 'stream', // Ensures we handle the file stream correctly
+        });
+
+        const writer = fs.createWriteStream(localPath);
+        response.data.pipe(writer);
+
+        return new Promise((resolve, reject) => {
+            writer.on('finish', () => resolve(`File downloaded successfully: ${localPath}`));
+            writer.on('error', (error) => {
+                console.error(`Error writing file: ${error.message}`);
+                reject(new Error("Failed to download the file."));
+            });
+        });
+    } catch (error) {
+        console.error(`Error downloading file: ${error.response?.status} - ${error}`);
+        throw new Error("Failed to download the file.");
+    }
+};
+
+
+module.exports = {
+    initializeB2,
+    uploadToB2,
+    authorizeAccount,
+    getDownloadAuthorization,
+    downloadFile
+};
