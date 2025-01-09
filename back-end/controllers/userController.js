@@ -25,7 +25,7 @@ module.exports = {
             const refreshToken = await signRefreshToken(newUser.user_id);
 
             // Respond with tokens
-            res.status(201).send({ accessToken, refreshToken });
+            res.status(201).send({ message: "Registration successful", accessToken, refreshToken });
         } catch (error) {
             next(error);
         }

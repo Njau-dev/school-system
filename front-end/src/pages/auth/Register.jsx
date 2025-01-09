@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Input, Checkbox, Button, Typography } from '@material-tailwind/react'
-import toast from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast'
 import axios from 'axios'
 
 const Register = () => {
@@ -13,6 +13,8 @@ const Register = () => {
         password: "",
         termsAccepted: false,
     });
+
+    const navigate = useNavigate();
 
     // Update formData state on input change
     const handleChange = (e) => {
@@ -35,24 +37,32 @@ const Register = () => {
         try {
             // API call
             const response = await axios.post("http://localhost:4000/register", {
-                username: formData.username,
+                name: formData.username,
                 email: formData.email,
                 password: formData.password,
             });
 
-            toast.success(response.data.message);
-            navigate("/signin");
+            if (response.status === 201) {
+                toast.success(response.data.message);
+
+                setTimeout(() => {
+                    navigate("signin");
+                }, 3000);
+            }
+
 
         } catch (error) {
             // Handle errors and show error message
             toast.error(
-                error.response?.data?.message || "Something went wrong. Try again!"
+                error.response.data.error.message
             );
         }
+
     };
 
     return (
         <section className="m-8 flex">
+            <div><Toaster /></div>
             <div className="w-2/5 h-full hidden lg:block">
                 <img
                     src="src/assets/img/pattern.png"

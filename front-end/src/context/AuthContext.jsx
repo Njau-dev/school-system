@@ -1,5 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 import React, { createContext, useContext, useState, useEffect } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 // Create AuthContext
@@ -15,6 +16,7 @@ export const AuthProvider = ({ children }) => {
     const decodeToken = (token) => {
         try {
             const decoded = jwtDecode(token);
+
             return decoded;
         } catch (error) {
             console.error("Invalid token");
@@ -23,7 +25,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     // Function to handle login
-    const login = (token) => {
+    const logIn = (token) => {
         const decoded = decodeToken(token);
         if (decoded) {
             setToken(token);
@@ -37,7 +39,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     // Function to handle logout
-    const logout = () => {
+    const logOut = () => {
         setToken(null);
         setIsAuthenticated(false);
         setRole(null);
@@ -57,15 +59,18 @@ export const AuthProvider = ({ children }) => {
                 setRole(decoded.role);
             } else {
                 // Log out if token is expired
-                logout();
+                logOut();
             }
         }
     }, []);
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, role, login, logout }}>
-            {children}
-        </AuthContext.Provider>
+        <>
+            <div><Toaster /></div>
+            <AuthContext.Provider value={{ isAuthenticated, role, logIn, logOut }}>
+                {children}
+            </AuthContext.Provider>
+        </>
     );
 };
 
