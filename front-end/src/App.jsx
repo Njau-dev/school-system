@@ -1,73 +1,45 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
-import StudentDashboard from "./pages/dashboard/StudentDashboard";
-import LecturerDashboard from "./pages/dashboard/LecturerDashboard";
-import AdminDashboard from "./pages/dashboard/AdminDashboard";
+import DashboardLayout from "./layouts/DashboardLayout";
+import Dashboard from "./pages/dashboard/Dashboard";
 import Assignments from "./pages/dashboard/Assignments";
 import Submissions from "./pages/dashboard/Submissions";
+import Profile from "./pages/dashboard/Profile";
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
 
 const App = () => {
-  const { isAuthenticated, role } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   // Component to handle protected routes
   const PrivateRoute = ({ children }) => {
     return isAuthenticated ? children : <Navigate to="/signin" />;
   };
 
-  // Dynamically render dashboards based on role
-  const getDashboard = () => {
-    switch (role) {
-      case "student":
-        return <StudentDashboard />;
-      case "lecturer":
-        return <LecturerDashboard />;
-      case "admin":
-        return <AdminDashboard />;
-      default:
-        return <Navigate to="/signin" />;
-    }
-  };
-
   return (
-    <Router>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/signup" element={<Register />} />
-        <Route path="/signin" element={<Login />} />
+    <Routes>
+      {/* Public Routes */}
+      <Route path="/signup" element={<Register />} />
+      <Route path="/signin" element={<Login />} />
 
-        {/* Protected Routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              {getDashboard()}
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/assignments"
-          element={
-            <PrivateRoute>
-              <Assignments />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/submissions"
-          element={
-            <PrivateRoute>
-              <Submissions />
-            </PrivateRoute>
-          }
-        />
+      {/* Protected Routes - All wrapped in DashboardLayout */}
+      <Route
+        element={
+          <PrivateRoute>
+            <DashboardLayout />
+          </PrivateRoute>
+        }
+      >
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/assignments" element={<Assignments />} />
+        <Route path="/submissions" element={<Submissions />} />
+      </Route>
 
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/signin" />} />
-      </Routes>
-    </Router>
+      {/* Fallback */}
+      <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/signin"} />} />
+    </Routes>
   );
 };
 

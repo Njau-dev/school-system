@@ -13,7 +13,7 @@ export function MaterialTailwindProvider({ children }) {
         sidenavType: "white",
         transparentNavbar: true,
         fixedNavbar: false,
-        openConfigurator: false,
+        openConfigurator: true,
     });
 
     // Handlers to update state

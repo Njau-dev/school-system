@@ -10,15 +10,14 @@ import { useMaterialTailwind } from "../context/MaterialTwContext";
 
 export function Configurator() {
     const {
-        openConfigurator,
-        sidenavColor,
-        sidenavType,
-        fixedNavbar,
+        state,
         setOpenConfigurator,
         setSidenavColor,
         setSidenavType,
         setFixedNavbar,
     } = useMaterialTailwind();
+
+    const { openConfigurator, sidenavColor, sidenavType, fixedNavbar } = state;
 
     const sidenavColors = {
         white: "from-gray-100 to-gray-100 border-gray-200",
@@ -115,6 +114,6 @@ export function Configurator() {
     );
 }
 
-Configurator.displayName = "/src/widgets/layout/configurator.jsx";
+// Configurator.displayName = "/src/widgets/layout/configurator.jsx";
 
 export default Configurator;
