@@ -12,6 +12,8 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(null);
     const navigate = useNavigate();
 
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
     // Helper function to decode JWT
     const decodeToken = (token) => {
         try {
@@ -23,6 +25,8 @@ export const AuthProvider = ({ children }) => {
             return null;
         }
     };
+
+
 
     // Function to handle login
     const logIn = (token) => {
@@ -67,7 +71,7 @@ export const AuthProvider = ({ children }) => {
     return (
         <>
             <div><Toaster /></div>
-            <AuthContext.Provider value={{ isAuthenticated, role, logIn, logOut }}>
+            <AuthContext.Provider value={{ isAuthenticated, role, logIn, logOut, backendUrl, token }}>
                 {children}
             </AuthContext.Provider>
         </>

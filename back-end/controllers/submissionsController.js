@@ -21,7 +21,7 @@ module.exports = {
     submitAssignment: async (req, res, next) => {
         try {
             const student_id = req.user.id;
-            const file = req.file; // Assuming multer is used for file handling
+            const file = req.file;
 
             const assignment_id = req.params.assignmentId;
 
@@ -84,16 +84,110 @@ module.exports = {
                     {
                         model: Assignment,
                         as: 'assignment',
-                        attributes: ["title"], // Only include the assignment title
+                        attributes: ["title"],
                     },
                 ],
-                attributes: ["id", "file_url", "graded", "grade", "comment", "submitted_at"], // Submission fields to return
+                attributes: ["id", "graded", "grade", "submitted_at"],
                 order: [["submitted_at", "DESC"]], // Order submissions by latest first
             });
+
+            if (!submissions) {
+                return createError.NotFound({ message: "Submissions not found." });
+            }
 
             res.status(200).json({
                 message: "Submissions fetched successfully",
                 submissions,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    fetchLecturerSubmissions: async (req, res, next) => {
+        try {
+            const lecturer_id = req.user.id;
+
+            // Fetch submissions for assignments created by the logged-in lecturer
+            const submissions = await Submission.findAll({
+                include: [
+                    {
+                        model: Assignment,
+                        as: 'assignment',
+                        attributes: ["title", "assignment_id"],
+                        where: { lecturer_id: lecturer_id }, // Ensure the assignment was created by the lecturer
+                    },
+                    {
+                        model: User,
+                        as: 'student',
+                        attributes: ["name"], // Include student name
+                    },
+                ],
+                attributes: ["id", "submitted_at", "graded", "grade"],
+                order: [["submitted_at", "DESC"]], // Order by latest submissions first
+            });
+
+            if (!submissions.length) {
+                return res.status(404).json({
+                    message: "No submissions found for your assignments.",
+                });
+            }
+
+            const formattedSubmissions = submissions.map((submission) => ({
+                id: submission.id,
+                studentName: submission.student.name,
+                submittedAt: submission.submitted_at,
+                graded: submission.graded,
+                grade: submission.grade,
+            }));
+
+            res.status(200).json({
+                message: "Submissions fetched successfully.",
+                submissions: formattedSubmissions,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+
+
+    fetchAdminSubmissions: async (req, res, next) => {
+        try {
+            // Fetch all submissions across all assignments created by all lecturers
+            const submissions = await Submission.findAll({
+                include: [
+                    {
+                        model: Assignment,
+                        as: 'assignment',
+                        attributes: ["title", "assignment_id"],
+                    },
+                    {
+                        model: User,
+                        as: 'student',
+                        attributes: ["name"], // Include student name
+                    },
+                ],
+                attributes: ["id", "submitted_at", "graded", "grade"],
+                order: [["submitted_at", "DESC"]], // Order by latest submissions first
+            });
+
+            if (!submissions.length) {
+                return res.status(404).json({
+                    message: "No submissions found.",
+                });
+            }
+
+            const formattedSubmissions = submissions.map((submission) => ({
+                id: submission.id,
+                studentName: submission.student.name,
+                submittedAt: submission.submitted_at,
+                graded: submission.graded,
+                grade: submission.grade,
+            }));
+
+            res.status(200).json({
+                message: "Submissions fetched successfully.",
+                submissions: formattedSubmissions,
             });
         } catch (error) {
             next(error);
@@ -118,7 +212,7 @@ module.exports = {
             });
 
             if (!record) {
-                return res.status(404).json({ message: "Submission not found." });
+                return createError.NotFound({ message: "Submission not found." });
             }
 
             // Authorize Backblaze B2 account
@@ -276,19 +370,5 @@ module.exports = {
             next(error);
         }
     },
-
-    //admin controllers
-    fetchSubmissionsSummary: async (req, res) => {
-        try {
-            // Fetch the total number of submissions
-            const totalSubmissions = await Submission.count();
-
-            res.status(200).json({ totalSubmissions });
-        } catch (error) {
-            console.error("Error fetching submissions summary:", error.message);
-            res.status(500).json({ message: "Error fetching submissions summary." });
-        }
-    },
-
 
 };

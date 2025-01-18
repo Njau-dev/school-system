@@ -8,12 +8,12 @@ const { verifyAccessToken } = require('../helpers/jwtHelpers');
 routes.post('/addreport/:studentId', verifyAccessToken, reportController.addReport)
 
 // Student fetches their own report
-routes.get("/reports/student", verifyAccessToken, reportController.fetchStudentReport);
+routes.get("/student/reports", verifyAccessToken, reportController.fetchStudentReport);
 
 // Lecturer fetches reports they’ve given
-routes.get("/reports/lecturer", verifyAccessToken, reportController.fetchLecturerReports);
+routes.get("/lecturer/reports", verifyAccessToken, reportController.fetchLecturerReports);
 
 // Admin fetches all reports
-routes.get("/reports/admin", verifyAccessToken, reportController.fetchAllReports);
+routes.get("/admin/reports", verifyAccessToken, reportController.fetchAllReports);
 
 module.exports = routes

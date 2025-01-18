@@ -7,6 +7,7 @@ const userRoutes = require('./routes/userRoutes')
 const assignmentRoutes = require('./routes/assignmentRoutes')
 const submitRoutes = require('./routes/submissionRoutes')
 const reportRoutes = require('./routes/reportRoutes')
+const dashboardRoutes = require('./routes/dashboardRoutes')
 
 app.use(cors({
     origin: ['http://localhost:5174', 'http://localhost:5173'],
@@ -21,6 +22,7 @@ app.use(userRoutes);
 app.use(assignmentRoutes)
 app.use(submitRoutes)
 app.use(reportRoutes)
+app.use(dashboardRoutes)
 
 //handling 404 error
 app.use((req, res, next) => {

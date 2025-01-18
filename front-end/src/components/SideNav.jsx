@@ -1,19 +1,20 @@
 // Updated Sidenav Component
 import { Link, NavLink } from "react-router-dom";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { HomeIcon, UserCircleIcon, TableCellsIcon, DocumentTextIcon } from "@heroicons/react/24/solid";
+import { HomeIcon, UserCircleIcon, TableCellsIcon, DocumentTextIcon, IdentificationIcon } from "@heroicons/react/24/solid";
 import { Button, IconButton, Typography } from "@material-tailwind/react";
 import { useMaterialTailwind } from "../context/MaterialTwContext";
+import { useAuth } from "../context/AuthContext";
 
 export function Sidenav() {
     const { state, setOpenSidenav } = useMaterialTailwind();
-
     const { sidenavColor, sidenavType, openSidenav } = state
+    const { role } = useAuth()
 
     const sidenavTypes = {
         dark: "bg-gradient-to-br from-gray-800 to-gray-900",
-        white: "bg-white shadow-sm",
-        transparent: "bg-transparent",
+        white: "bg-white shadow-md",
+        transparent: "bg-transparent backdrop-blur-lg",
     };
 
     return (
@@ -24,10 +25,18 @@ export function Sidenav() {
             <div className={`relative`}>
                 <Link to="/dashboard" className="py-6 px-8 text-center">
                     <Typography
-                        variant="h6"
+                        variant="h3"
                         color={sidenavType === "dark" ? "white" : "blue-gray"}
                     >
-                        Dashboard
+                        School App
+                    </Typography>
+
+                    <Typography
+                        variant="h6"
+                        color={sidenavType === "dark" ? "white" : "blue-gray"}
+                        className="mt-3 capitalize flex justify-center items-center gap-3"
+                    >
+                        <IdentificationIcon className="h-7" /> {role}
                     </Typography>
                 </Link>
                 <IconButton

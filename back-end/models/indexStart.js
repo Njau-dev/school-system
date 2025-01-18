@@ -1,5 +1,5 @@
 const dbConfig = require('../config/dbConfig');
-const { Sequelize, DataTypes } = require('sequelize');
+const { Sequelize, DataTypes, Op } = require('sequelize');
 require('dotenv').config();
 
 const sequelize = new Sequelize(
@@ -21,6 +21,8 @@ sequelize.authenticate()
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
+db.Op = Op;
+
 
 // Load models
 db.users = require('./userModels')(sequelize, DataTypes);

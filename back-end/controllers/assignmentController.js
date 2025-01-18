@@ -42,45 +42,87 @@ module.exports = {
     },
 
 
-    // Fetch all assignments
-    fetchAllAssignments: async (req, res, next) => {
+    // Fetch all assignments for Students
+    fetchAssignmentsForStudent: async (req, res, next) => {
         try {
-            // Fetch assignments along with lecturer and grading details
+            const userId = req.user.id; // Assume student ID is retrieved from the authenticated user
+
+            // Fetch assignments with lecturer details
             const assignments = await Assignment.findAll({
                 include: [
                     {
                         model: User,
                         as: "lecturer",
-                        attributes: ["name", "email"],
+                        attributes: ["name"],
                     },
                     {
                         model: Submission,
-                        attributes: ["grade", "graded"],
+                        as: "submissions",
+                        attributes: ["student_id"],
                     },
                 ],
             });
 
+            // Process assignments for the student
             const response = assignments.map((assignment) => {
-                const gradedSubmissions = assignment.submissions.filter((submission) => submission.graded);
-
-                // Calculate grading status and mean grade
-                const gradingStatus = gradedSubmissions.length > 0 ? "Graded" : "Not Graded";
-                const meanGrade =
-                    gradedSubmissions.length > 0
-                        ? (
-                            gradedSubmissions.reduce((total, sub) => total + sub.grade, 0) /
-                            gradedSubmissions.length
-                        ).toFixed(2)
-                        : null;
+                // Check if the student has submitted for this assignment
+                const studentSubmission = assignment.submissions.find(
+                    (submission) => submission.student_id === userId
+                );
 
                 return {
                     id: assignment.assignment_id,
                     title: assignment.title,
                     description: assignment.description,
                     createdAt: assignment.created_at,
-                    lecturer: assignment.lecturer,
-                    gradingStatus,
-                    meanGrade,
+                    lecturer: assignment.lecturer.name,
+                    submissionStatus: studentSubmission ? "submitted" : "notSubmitted",
+                };
+            });
+
+            res.status(200).send(response);
+        } catch (error) {
+            console.error("Error in fetchAssignmentsForStudent:", error.message);
+            next(error);
+        }
+    },
+
+
+    // Fetch assignments for lecturers
+    fetchAssignmentsForLecturer: async (req, res, next) => {
+        try {
+            const userId = req.user.id;
+
+            // Fetch assignments created by the lecturer
+            const assignments = await Assignment.findAll({
+                where: { lecturer_id: userId },
+                include: [
+                    {
+                        model: Submission,
+                        as: "submissions",
+                        attributes: ["student_id"],
+                    },
+                ],
+            });
+
+            // Fetch the total number of students (assuming the students table exists)
+            const totalStudentsCount = await User.count({ where: { role: "student" } });
+
+            const response = assignments.map((assignment) => {
+                const submittedCount = assignment.submissions.length;
+
+                const hasSubmitted = submittedCount === totalStudentsCount;
+                const submissionRate = `${submittedCount}/${totalStudentsCount}`;
+                const submissionPercentage = ((submittedCount / totalStudentsCount) * 100).toFixed(2);
+
+                return {
+                    id: assignment.assignment_id,
+                    title: assignment.title,
+                    description: assignment.description,
+                    createdAt: assignment.created_at,
+                    hasSubmitted,
+                    submissionRate,
+                    submissionPercentage: `${submissionPercentage}%`,
                 };
             });
 
@@ -90,9 +132,59 @@ module.exports = {
         }
     },
 
+
+    // Fetch assignments for admin
+    fetchAssignmentsForAdmin: async (req, res, next) => {
+        try {
+            // Fetch all assignments with lecturer and submission details
+            const assignments = await Assignment.findAll({
+                include: [
+                    {
+                        model: User,
+                        as: "lecturer",
+                        attributes: ["name"],
+                    },
+                    {
+                        model: Submission,
+                        as: "submissions",
+                        attributes: ["student_id"],
+                    },
+                ],
+            });
+
+            // Fetch the total number of students (assuming the students table exists)
+            const totalStudentsCount = await User.count({ where: { role: "student" } });
+
+            const response = assignments.map((assignment) => {
+                const submittedCount = assignment.submissions.length;
+
+                const hasSubmitted = submittedCount === totalStudentsCount;
+                const submissionRate = `${submittedCount}/${totalStudentsCount}`;
+                const submissionPercentage = ((submittedCount / totalStudentsCount) * 100).toFixed(2);
+
+                return {
+                    id: assignment.assignment_id,
+                    title: assignment.title,
+                    description: assignment.description,
+                    createdAt: assignment.created_at,
+                    lecturer: assignment.lecturer.name,
+                    hasSubmitted,
+                    submissionRate,
+                    submissionPercentage: `${submissionPercentage}%`,
+                };
+            });
+
+            res.status(200).send(response);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+
+    //for admin user management
     fetchAssignmentsByLecturer: async (req, res, next) => {
         try {
-            const lecturerId = req.params.lecturerId; // Get lecturer ID from the route parameter
+            const lecturerId = req.params.lecturerId;
 
             const assignments = await Assignment.findAll({
                 where: { lecturer_id: lecturerId },
@@ -104,6 +196,7 @@ module.exports = {
                     },
                     {
                         model: Submission,
+                        as: "submissions",
                         attributes: ['grade', 'graded'],
                     },
                 ],
@@ -129,7 +222,7 @@ module.exports = {
                     createdAt: assignment.created_at,
                     gradingStatus,
                     meanGrade,
-                    lecturer: assignment.lecturer, // Includes lecturer name and email
+                    lecturer: assignment.lecturer,
                 };
             });
 
@@ -149,11 +242,12 @@ module.exports = {
                 include: [
                     {
                         model: User,
-                        as: 'lecturer', // Lecturer association
-                        attributes: ['name', 'email'], // Lecturer details
+                        as: 'lecturer',
+                        attributes: ['name', 'email'],
                     },
                     {
                         model: Submission,
+                        as: "submissions",
                         include: [
                             {
                                 model: User,
@@ -161,7 +255,7 @@ module.exports = {
                                 attributes: ['name', 'email'],
                             },
                         ],
-                        attributes: ['grade', 'graded', 'student_id'], // Submission details
+                        attributes: ['grade', 'graded', 'student_id'],
                     },
                 ],
             });
@@ -172,12 +266,12 @@ module.exports = {
 
             // Map student submissions to build a detailed response
             const students = assignment.submissions.map((submission) => ({
-                id: submission.student?.user_id, // Student ID
-                name: submission.student?.name, // Student name
-                email: submission.student?.email, // Student email
-                hasSubmitted: true, // Submission exists
-                grade: submission.grade, // Grade
-                graded: submission.graded, // Graded status
+                id: submission.student?.user_id,
+                name: submission.student?.name,
+                email: submission.student?.email,
+                hasSubmitted: true,
+                grade: submission.grade,
+                graded: submission.graded,
             }));
 
             // Build response object
@@ -186,8 +280,8 @@ module.exports = {
                 title: assignment.title,
                 description: assignment.description,
                 createdAt: assignment.created_at,
-                lecturer: assignment.lecturer, // Lecturer details
-                students, // Students and their submission details
+                lecturer: assignment.lecturer,
+                students,
             };
 
             res.status(200).send(response);

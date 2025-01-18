@@ -9,7 +9,7 @@ MaterialTailwindContext.displayName = "MaterialTailwindContext";
 export function MaterialTailwindProvider({ children }) {
     const [state, setState] = useState({
         openSidenav: false,
-        sidenavColor: "dark",
+        sidenavColor: "black",
         sidenavType: "white",
         transparentNavbar: true,
         fixedNavbar: false,
@@ -67,6 +67,6 @@ export function useMaterialTailwind() {
 }
 
 // PropTypes for the provider
-MaterialTailwindProvider.propTypes = {
-    children: PropTypes.node.isRequired,
-};
+// MaterialTailwindProvider.propTypes = {
+//     children: PropTypes.node.isRequired,
+// };

@@ -39,12 +39,12 @@ module.exports = {
 
 
     //fetching
-    // 1. Student fetches their own report
+    // 1. Student fetches their own reports
     fetchStudentReport: async (req, res) => {
-        const { id: studentId } = req.user; // Assuming `req.user` has authenticated user's ID
+        const studentId = req.user.id;
 
         try {
-            const report = await Report.findOne({
+            const report = await Report.findAll({
                 where: { student_id: studentId },
                 include: [
                     {

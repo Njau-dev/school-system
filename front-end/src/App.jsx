@@ -8,6 +8,7 @@ import Submissions from "./pages/dashboard/Submissions";
 import Profile from "./pages/dashboard/Profile";
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
+import AssignmentDetails from "./components/AssignmentDetails";
 
 const App = () => {
   const { isAuthenticated } = useAuth();
@@ -34,6 +35,7 @@ const App = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/assignments" element={<Assignments />} />
+        <Route path="/assignments/:id" element={<AssignmentDetails />} />
         <Route path="/submissions" element={<Submissions />} />
       </Route>
 
