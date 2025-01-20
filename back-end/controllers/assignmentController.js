@@ -16,7 +16,6 @@ module.exports = {
                 throw createError.Unauthorized("User information is missing.");
             }
 
-
             const { title, description } = req.body;
             const createdBy = req.user.id;
 
