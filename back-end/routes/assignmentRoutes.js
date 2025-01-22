@@ -24,7 +24,7 @@ routes.get('/assignments/lecturer/:lecturerId', verifyAccessToken, assignmentCon
 //fetch summarry for a specific assignment
 routes.get('/assignments/:assignmentId/summary', assignmentController.fetchAssignmentSummary)
 
-//grade assignment
+//update assignment details
 routes.put("/assignments/:assignmentId", verifyAccessToken, auth.restrict('student', 'admin'), auth.validateLecturerAccess, assignmentController.updateAssignment);
 
 //delete assignment

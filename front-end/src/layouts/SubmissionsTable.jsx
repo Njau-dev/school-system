@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Chip, Progress } from '@material-tailwind/react';
+import { Typography, Chip, Progress, IconButton } from '@material-tailwind/react';
 import { Link } from 'react-router-dom';
 import { EyeIcon } from "@heroicons/react/24/outline";
 
@@ -90,8 +90,10 @@ const SubmissionTable = ({ role, data }) => {
                                             />
                                         </div>
                                     ) : column.key === 'actions' ? (
-                                        <Link to={`/submissions/${submission.id}`}>
-                                            <EyeIcon className="h-5 w-5 text-blue-gray-600" />
+                                        <Link to={`/submissions/details/${submission.id}`}>
+                                            <IconButton variant="text" color="blue-gray">
+                                                <EyeIcon className="h-4 w-4" />
+                                            </IconButton>
                                         </Link>
                                     ) : (
                                         <Typography className="text-xs font-semibold text-blue-gray-600">

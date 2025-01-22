@@ -1,0 +1,20 @@
+default role is student, admin assigns roles manually
+
+file should be pdf, word document, .txt file, .docx file
+also we will have a upload limit of 10 mbs
+
+no assignment deadlines
+
+report will be a free text form
+
+wewill have restrictions for changing roles only admin can do this
+
+we might add notifications on the next update but not now
+
+
+we will sort assignments by the ungraded ones first on the lecturers side
+
+
+
+GRANT ALL PRIVILEGES ON `school_system_node`.* TO 'njau'@'localhost' IDENTIFIED BY 'Njau9899.';
+

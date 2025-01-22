@@ -1,10 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Card, CardBody, Typography, Avatar, Chip, IconButton, Button, Dialog, DialogHeader, DialogBody, DialogFooter } from '@material-tailwind/react';
-import { CalendarDaysIcon, UserIcon, EnvelopeIcon, EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { CalendarDaysIcon, UserIcon, EnvelopeIcon, EyeIcon, TrashIcon, CloudArrowUpIcon, DocumentPlusIcon } from "@heroicons/react/24/outline";
 import axios from 'axios';
 import toast from 'react-hot-toast';
+
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
+const allowedFileTypes = [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'text/plain',
+    'text/markdown',
+];
 
 const AssignmentDetails = () => {
     const { id } = useParams();
@@ -13,6 +23,10 @@ const AssignmentDetails = () => {
     const [assignment, setAssignment] = useState(null);
     const [loading, setLoading] = useState(true);
     const [openDialog, setOpenDialog] = useState(false);
+    const [openSubmitDialog, setOpenSubmitDialog] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [submitLoading, setSubmitLoading] = useState(false);
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         const fetchAssignment = async () => {
@@ -39,7 +53,7 @@ const AssignmentDetails = () => {
 
     const handleDelete = async () => {
         try {
-            await axios.delete(`${backendUrl}assignment/${id}`, {
+            await axios.delete(`${backendUrl}assignments/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -51,6 +65,67 @@ const AssignmentDetails = () => {
             toast.error('Error deleting assignment');
         }
     };
+
+    //file handling
+    const validateFile = (file) => {
+        if (!file) return 'Please select a file';
+        if (!allowedFileTypes.includes(file.type)) {
+            return 'Invalid file type. Please upload PDF, Word, Text, or Markdown files.';
+        }
+        if (file.size > MAX_FILE_SIZE) {
+            return 'File size exceeds 10MB limit';
+        }
+        return null;
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const error = validateFile(file);
+            if (error) {
+                toast.error(error);
+                e.target.value = null;
+                setSelectedFile(null);
+            } else {
+                setSelectedFile(file);
+            }
+        }
+    };
+
+    const handleSubmit = async () => {
+        if (!selectedFile) {
+            toast.error('Please select a file');
+            return;
+        }
+
+        const error = validateFile(selectedFile);
+        if (error) {
+            toast.error(error);
+            return;
+        }
+
+        setSubmitLoading(true);
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+
+        try {
+            await axios.post(`${backendUrl}submit/${id}`, formData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            toast.success('Assignment submitted successfully');
+            setOpenSubmitDialog(false);
+            navigate('/submissions');
+        } catch (error) {
+            console.error('Error submitting assignment:', error);
+            toast.error(error.response?.data?.message || 'Error submitting assignment');
+        } finally {
+            setSubmitLoading(false);
+        }
+    };
+
 
     if (loading || !assignment) return <div>Loading...</div>;
 
@@ -130,15 +205,14 @@ const AssignmentDetails = () => {
                         {/* Add Submit Button for Students */}
                         {role === 'student' && (
                             <div className="flex justify-start mt-6">
-                                <Link to={`/submit-assignment/${id}`}>
-                                    <Button
-                                        color="blue"
-                                        variant="gradient"
-                                        className="px-6"
-                                    >
-                                        Submit Assignment
-                                    </Button>
-                                </Link>
+                                <Button
+                                    color="gray"
+                                    variant="gradient"
+                                    className="px-6"
+                                    onClick={() => setOpenSubmitDialog(true)}
+                                >
+                                    Submit Assignment
+                                </Button>
                             </div>
                         )}
                     </div>
@@ -217,7 +291,7 @@ const AssignmentDetails = () => {
                                                     </td>
                                                     <td className={className}>
                                                         {student.hasSubmitted && (
-                                                            <Link to={`/submissions/${id}`}>
+                                                            <Link to={`/submissions`}>
                                                                 <IconButton variant="text" color="blue-gray">
                                                                     <EyeIcon className="h-4 w-4" />
                                                                 </IconButton>
@@ -233,8 +307,86 @@ const AssignmentDetails = () => {
                         </div>
                     )}
                 </CardBody>
-            </Card>
 
+                {/* Submit Assignment Dialog */}
+                <Dialog
+                    open={openSubmitDialog}
+                    handler={() => {
+                        setOpenSubmitDialog(false);
+                        setSelectedFile(null);
+                        if (fileInputRef.current) {
+                            fileInputRef.current.value = '';
+                        }
+                    }}
+                    className="min-w-[80%] md:min-w-[60%] lg:min-w-[40%]"
+                >
+                    <DialogHeader className="flex items-center gap-3">
+                        <CloudArrowUpIcon className="h-6 w-6 text-blue-500" />
+                        Submit Assignment
+                    </DialogHeader>
+                    <DialogBody>
+                        <div className="flex flex-col gap-4">
+                            <Typography color="gray" className="text-sm">
+                                Please upload your assignment file. Accepted formats: PDF, Word, Text, or Markdown.
+                                Maximum file size: 10MB.
+                            </Typography>
+
+                            <div className="w-full p-4 border border-dashed border-blue-gray-200 rounded-lg">
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    onChange={handleFileChange}
+                                    accept={allowedFileTypes.join(',')}
+                                    className="w-full text-sm text-gray-500
+                        file:mr-4 file:py-2 file:px-4
+                        file:rounded-md file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-blue-50 file:text-blue-700
+                        hover:file:bg-blue-100"
+                                />
+                            </div>
+
+                            {selectedFile && (
+                                <div className="flex items-center gap-2 text-sm text-blue-gray-600">
+                                    <DocumentPlusIcon className="h-4 w-4" />
+                                    {selectedFile.name}
+                                </div>
+                            )}
+                        </div>
+                    </DialogBody>
+                    <DialogFooter>
+                        <Button
+                            variant="text"
+                            color="gray"
+                            onClick={() => {
+                                setOpenSubmitDialog(false);
+                                setSelectedFile(null);
+                                if (fileInputRef.current) {
+                                    fileInputRef.current.value = '';
+                                }
+                            }}
+                            className="mr-1"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="gradient"
+                            color="blue"
+                            onClick={handleSubmit}
+                            disabled={submitLoading || !selectedFile}
+                            className="flex items-center gap-2"
+                        >
+                            {submitLoading ? (
+                                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                            ) : (
+                                <CloudArrowUpIcon className="h-4 w-4" />
+                            )}
+                            {submitLoading ? 'Submitting...' : 'Submit'}
+                        </Button>
+                    </DialogFooter>
+                </Dialog>
+
+            </Card>
 
             {/* Delete Confirmation Dialog */}
             <Dialog open={openDialog} handler={() => setOpenDialog(false)}>

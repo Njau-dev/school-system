@@ -85,9 +85,6 @@ const LecturerDashboard = () => {
         fetchTableData();
     }, []);
 
-    console.log(studentData);
-
-
     return (
         <>
             <DashboardCards

@@ -5,6 +5,8 @@ import axios from 'axios';
 import AssignmentTable from '../../layouts/AssignmentTable';
 import { getAssignments } from '../../configs/services/AssignmentServices';
 import toast from 'react-hot-toast';
+import { DocumentPlusIcon } from '@heroicons/react/24/outline';
+import { Link } from 'react-router-dom';
 
 const Assignments = () => {
     const { role, backendUrl, token } = useAuth();
@@ -31,10 +33,16 @@ const Assignments = () => {
     return (
         <div className="mt-12 mb-8 flex flex-col gap-12">
             <Card>
-                <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
+                <CardHeader variant="gradient" color="gray" className="mb-8 p-6 flex justify-between">
                     <Typography variant="h6" color="white">
                         Assignments Table
                     </Typography>
+
+                    {role === 'lecturer' &&
+                        <Link to='/addassignment'>
+                            <DocumentPlusIcon className='h-7' />
+                        </Link>
+                    }
                 </CardHeader>
                 <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
                     {loading ? (

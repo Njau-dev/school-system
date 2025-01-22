@@ -204,9 +204,9 @@ module.exports = {
                 where: { id: id },
                 include: [
                     {
-                        model: Assignment,
-                        as: 'assignment',
-                        attributes: ['title', 'description']
+                        model: User,
+                        as: 'student',
+                        attributes: ['name', 'email'],
                     }
                 ]
             });
@@ -266,11 +266,6 @@ module.exports = {
                         model: User,
                         as: 'student',
                         attributes: ['name', 'email'],
-                    },
-                    {
-                        model: Assignment,
-                        as: 'assignment',
-                        attributes: ['title', 'description'],
                     }
                 ]
             });
@@ -294,7 +289,7 @@ module.exports = {
             );
 
             if (!downloadAuthToken) {
-                throw new Error("Failed to get download authorization.");
+                throw createError.Unauthorized("Failed to get download authorization.");
             }
 
             // Constructing the full download URL in the controller
@@ -328,10 +323,10 @@ module.exports = {
                     {
                         model: User,
                         as: 'student',
-                        attributes: ['user_id', 'name', 'email'], // Fetch student details
+                        attributes: ['user_id', 'name', 'email'],
                     },
                 ],
-                attributes: ['id', 'submitted_at', 'grade', 'graded'], // Fetch submission details
+                attributes: ['id', 'submitted_at', 'grade', 'graded'],
             });
 
             if (!submissions || submissions.length === 0) {
@@ -350,10 +345,15 @@ module.exports = {
             const { id } = req.params;
             const { grade, comment } = req.body;
 
+            console.log(id);
+            console.log(grade)
+            console.log(comment);
+
+
             // Validate the submission exists
             const submission = await Submission.findByPk(id);
             if (!submission) {
-                return res.status(404).json({ message: 'Submission not found' });
+                return createError.NotFound({ message: 'Submission not found' });
             }
 
             // Update the grade and mark as graded

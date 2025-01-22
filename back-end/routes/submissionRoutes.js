@@ -26,7 +26,7 @@ routes.get('/submission/lecturer/:id', verifyAccessToken, auth.restrict('student
 routes.get('/submissions/assignments/:assignmentId', submissionController.fetchSubmissionsByAssignmentId);
 
 // Grade submission
-routes.put('/submissions/:id', verifyAccessToken, auth.validateLecturerAccess, submissionController.gradeSubmission);
+routes.put('/submissions/:id', verifyAccessToken, submissionController.gradeSubmission);
 
 
 module.exports = routes

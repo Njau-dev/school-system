@@ -9,9 +9,11 @@ import Profile from "./pages/dashboard/Profile";
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
 import AssignmentDetails from "./components/AssignmentDetails";
+import AddAssignment from "./components/AddAssignment";
+import SubmitDetails from "./components/SubmitDetails";
 
 const App = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, role } = useAuth();
 
   // Component to handle protected routes
   const PrivateRoute = ({ children }) => {
@@ -35,8 +37,12 @@ const App = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/assignments" element={<Assignments />} />
-        <Route path="/assignments/:id" element={<AssignmentDetails />} />
+        <Route path="/assignments/details/:id" element={<AssignmentDetails />} />
+        {role === 'lecturer' &&
+          <Route path="/addassignment" element={<AddAssignment />} />
+        }
         <Route path="/submissions" element={<Submissions />} />
+        <Route path="/submissions/details/:id" element={<SubmitDetails />} />
       </Route>
 
       {/* Fallback */}

@@ -59,7 +59,7 @@ const authorizeAccount = async (keyId, applicationKey) => {
 };
 
 // Function to get download authorization token
-const getDownloadAuthorization = async (authToken, apiUrl, bucketId, fileNamePrefix = "", validDuration = 6000) => {
+const getDownloadAuthorization = async (authToken, apiUrl, bucketId, fileNamePrefix = "", validDuration = 600000) => {
     const url = `${apiUrl}/b2api/v2/b2_get_download_authorization`;
     try {
         const response = await axios.post(
