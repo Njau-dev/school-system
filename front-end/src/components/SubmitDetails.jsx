@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Card, CardBody, Typography, Button, Dialog, DialogHeader, DialogBody, DialogFooter, Input, Textarea, Progress, Avatar, } from '@material-tailwind/react';
+import { Card, CardBody, Typography, Button, Dialog, DialogHeader, DialogBody, DialogFooter, Input, Progress, Avatar, Textarea, } from '@material-tailwind/react';
 import { CalendarDaysIcon, UserIcon, EnvelopeIcon, DocumentArrowDownIcon, AcademicCapIcon, ClipboardDocumentCheckIcon, PencilSquareIcon, EnvelopeOpenIcon } from "@heroicons/react/24/outline";
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -73,7 +73,7 @@ const SubmissionDetails = () => {
             );
             toast.success('Submission graded successfully');
             setGradeDialog(false);
-            // navigate('/submissions');
+            navigate('/submissions');
         } catch (error) {
             console.error('Error grading submission:', error);
             toast.error(error.response?.data?.message || 'Error grading submission');
@@ -162,22 +162,30 @@ const SubmissionDetails = () => {
                                     Submission Details
                                 </Typography>
                             </div>
-                            <div className="space-y-4">
-                                <div className="flex items-center gap-4">
-                                    <div className="flex items-center gap-2">
-                                        <UserIcon className="h-5 w-5 text-blue-gray-500" />
-                                        <Typography>{submission.student.name}</Typography>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <EnvelopeIcon className="h-5 w-5 text-blue-gray-500" />
-                                        <Typography>{submission.student.email}</Typography>
-                                    </div>
-                                </div>
+                            <div className="space-y-5">
                                 <div className="flex items-center gap-2">
                                     <CalendarDaysIcon className="h-5 w-5 text-blue-gray-500" />
                                     <Typography className="text-sm text-blue-gray-500">
                                         Submitted on {new Date(submission.submitted_at).toLocaleDateString()}
                                     </Typography>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <Avatar
+                                        src="/src/assets/img/student.jpeg"
+                                        alt={submission.student.name}
+                                        size="md"
+                                        variant="rounded"
+                                    />
+                                    <div>
+                                        <div className="flex items-center gap-2">
+                                            <UserIcon className="h-5 w-5 text-blue-gray-500" />
+                                            <Typography>{submission.student.name}</Typography>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <EnvelopeIcon className="h-5 w-5 text-blue-gray-500" />
+                                            <Typography>{submission.student.email}</Typography>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="space-y-2">
                                     <Typography variant="h6" color="blue-gray">Grade: {submission.grade}%</Typography>
@@ -198,7 +206,7 @@ const SubmissionDetails = () => {
                                 <div className="flex justify-between items-center">
                                     <Button
                                         variant="gradient"
-                                        color="blue"
+                                        color="gray"
                                         className="flex items-center gap-2"
                                         onClick={handleFileDownload}
                                     >
@@ -208,7 +216,7 @@ const SubmissionDetails = () => {
                                     {role === 'lecturer' && !submission.graded && (
                                         <Button
                                             variant="gradient"
-                                            color="green"
+                                            color="blue"
                                             className="flex items-center gap-2"
                                             onClick={() => setGradeDialog(true)}
                                         >
@@ -264,7 +272,7 @@ const SubmissionDetails = () => {
                         </Button>
                         <Button
                             variant="gradient"
-                            color="green"
+                            color="blue"
                             onClick={handleGradeSubmit}
                             disabled={grading}
                             className="flex items-center gap-2"

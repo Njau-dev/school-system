@@ -77,7 +77,9 @@ module.exports = {
     // Get all users (Admin only)
     getAllUsers: async (req, res, next) => {
         try {
-            const users = await User.findAll({});
+            const users = await User.findAll({
+                attributes: { exclude: ['password'] }
+            });
             res.status(200).send(users);
         } catch (error) {
             next(error);
@@ -86,7 +88,7 @@ module.exports = {
 
     getUserById: async (req, res, next) => {
         try {
-            const { userId } = req.params;
+            const userId = req.user.id;
 
             const user = await User.findByPk(userId, {
                 attributes: { exclude: ['password'] }

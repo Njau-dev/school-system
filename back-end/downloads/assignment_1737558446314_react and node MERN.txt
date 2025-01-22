@@ -1,0 +1,13 @@
+react and node
+MERN
+
+problem statement is:
+we are going to have 2 types of users, normal user and admin
+
+admin will have all the rights the system can do
+
+normal user will have limited access namely
+1. login/register
+2. upload their assignment
+3. they can only see their assignment
+4. admin can generate reports based on assignments
