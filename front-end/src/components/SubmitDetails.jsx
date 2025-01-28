@@ -90,7 +90,9 @@ const SubmissionDetails = () => {
     };
 
     const handleFileDownload = () => {
-        window.open(`${backendUrl}${downloadLink}`, '_blank');
+        const cleanDownloadLink = downloadLink.startsWith('/') ? downloadLink.slice(1) : downloadLink;
+        const finalUrl = `${backendUrl}${cleanDownloadLink}`;
+        window.open(finalUrl, '_blank');
     };
 
     if (loading || !submission || !assignment) return (

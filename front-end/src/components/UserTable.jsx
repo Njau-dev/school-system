@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Avatar, IconButton, Typography, Select, Option, Button, Dialog } from '@material-tailwind/react';
-import { TrashIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { CheckIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { toast } from 'react-hot-toast';
 
 const UserTable = ({ users, onUpdate, onDelete }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [deletingUser, setDeletingUser] = useState(null);
+    const [changingRole, setChangingRole] = useState(null);
     const itemsPerPage = 10;
 
     // Pagination calculations
@@ -15,12 +16,14 @@ const UserTable = ({ users, onUpdate, onDelete }) => {
         currentPage * itemsPerPage
     );
 
-    const handleRoleUpdate = async (userId, newRole) => {
+    const handleRoleChangeConfirmation = async () => {
         try {
-            await onUpdate(userId, newRole);
+            await onUpdate(changingRole.userId, changingRole.newRole);
             toast.success('Role updated successfully');
         } catch (error) {
             toast.error('Failed to update role');
+        } finally {
+            setChangingRole(null);
         }
     };
 
@@ -87,7 +90,11 @@ const UserTable = ({ users, onUpdate, onDelete }) => {
                                         <Select
                                             size="sm"
                                             value={user.role}
-                                            onChange={(newRole) => handleRoleUpdate(user.user_id, newRole)}
+                                            onChange={(newRole) => setChangingRole({
+                                                userId: user.user_id,
+                                                newRole,
+                                                currentRole: user.role
+                                            })}
                                             className="capitalize"
                                         >
                                             {['admin', 'lecturer', 'student'].map((role) => (
@@ -146,6 +153,46 @@ const UserTable = ({ users, onUpdate, onDelete }) => {
                     </Button>
                 </div>
             )}
+
+            {/* Role Change Confirmation Dialog */}
+            <Dialog open={!!changingRole} onClose={() => setChangingRole(null)}>
+                <div className="p-6 text-center">
+                    <CheckIcon className="mx-auto h-8 w-8 text-blue-500 mb-4" />
+                    <Typography variant="h5" color="blue-gray" className="mb-2">
+                        Confirm Role Change
+                    </Typography>
+
+                    {changingRole && (
+                        <div className="mb-4">
+                            <Typography className="text-sm">
+                                Change role from {' '}
+                                <span className="font-bold text-blue-500">
+                                    {changingRole.currentRole}
+                                </span> to {' '}
+                                <span className="font-bold text-green-500">
+                                    {changingRole.newRole}
+                                </span>?
+                            </Typography>
+                            <Typography variant="small" className="text-red-500 mt-2">
+                                Note: This will immediately modify user's permissions!
+                            </Typography>
+                        </div>
+                    )}
+
+                    <div className="flex justify-center gap-3">
+                        <Button variant="text" onClick={() => setChangingRole(null)}>
+                            Cancel
+                        </Button>
+                        <Button
+                            color="green"
+                            onClick={handleRoleChangeConfirmation}
+                            disabled={!changingRole}
+                        >
+                            Confirm Change
+                        </Button>
+                    </div>
+                </div>
+            </Dialog>
 
             {/* Delete Confirmation Modal */}
             <Dialog open={!!deletingUser} onClose={() => setDeletingUser(null)}>

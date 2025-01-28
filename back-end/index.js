@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const app = express()
+const path = require('path');
 
 const userRoutes = require('./routes/userRoutes')
 const assignmentRoutes = require('./routes/assignmentRoutes')
@@ -23,6 +24,9 @@ app.use(assignmentRoutes)
 app.use(submitRoutes)
 app.use(reportRoutes)
 app.use(dashboardRoutes)
+
+// Serve static files from the "downloads" directory
+app.use('/downloads', express.static(path.join(__dirname, 'downloads')));
 
 //handling 404 error
 app.use((req, res, next) => {
