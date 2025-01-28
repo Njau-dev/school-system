@@ -30,6 +30,12 @@ const Assignments = () => {
         fetchAssignments();
     }, [role, backendUrl, token]);
 
+    if (loading || !assignments) return (
+        <div className="flex justify-center items-center min-h-screen">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
+        </div>
+    );
+
     return (
         <div className="mt-12 mb-8 flex flex-col gap-12">
             <Card>
@@ -45,11 +51,7 @@ const Assignments = () => {
                     }
                 </CardHeader>
                 <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-                    {loading ? (
-                        <div>Loading...</div>
-                    ) : (
-                        <AssignmentTable role={role} data={assignments} />
-                    )}
+                    <AssignmentTable role={role} data={assignments} />
                 </CardBody>
             </Card>
         </div>

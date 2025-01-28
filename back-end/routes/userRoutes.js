@@ -10,15 +10,15 @@ routes.post('/register', userController.registerUser);
 
 routes.post('/login', userController.loginUser);
 
+routes.get('/getuser', verifyAccessToken, userController.getUserById);
+
 //admin
 routes.get('/getallusers', verifyAccessToken, auth.restrict('student', 'lecturer'), userController.getAllUsers);
 
-routes.get('/getuser', verifyAccessToken, userController.getUserById);
-
-//admin update user role
-routes.patch('/updateuser/:userId', verifyAccessToken, userController.updateUserRole);
+//admin - update user role
+routes.patch('/updateuser/:userId', verifyAccessToken, auth.restrict('student', 'lecturer'), userController.updateUserRole);
 
 //admin
-routes.delete('/deleteuser/:userId', verifyAccessToken, auth.restrict('admin'), userController.deleteUser);
+routes.delete('/deleteuser/:userId', verifyAccessToken, auth.restrict('student', 'lecturer'), userController.deleteUser);
 
 module.exports = routes;
