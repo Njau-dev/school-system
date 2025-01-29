@@ -68,7 +68,7 @@ const Register = () => {
             <div><Toaster /></div>
             <div className="w-2/5 h-full hidden lg:block">
                 <img
-                    src="public/img/pattern.png"
+                    src="/img/pattern.png"
                     className="h-full w-full object-cover rounded-3xl"
                 />
             </div>
