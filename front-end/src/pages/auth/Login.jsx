@@ -7,7 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 
 const Login = () => {
 
-    const { logIn } = useAuth();
+    const { logIn, backendUrl } = useAuth();
 
     // Local state to handle form data
     const [formData, setFormData] = useState({
@@ -37,7 +37,7 @@ const Login = () => {
         }
 
         try {
-            const response = await axios.post("http://localhost:4000/login", {
+            const response = await axios.post(`${backendUrl}login`, {
                 email: formData.email,
                 password: formData.password,
             });

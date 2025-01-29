@@ -7,10 +7,19 @@ const sequelize = new Sequelize(
     dbConfig.USER,
     dbConfig.PASSWORD, {
     host: dbConfig.HOST,
+    port: dbConfig.port,
     dialect: dbConfig.dialect,
-    operatorAliases: false,
-}
-);
+    operatorsAliases: false,
+    dialectOptions: dbConfig.dialectOptions,
+    pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+    }
+});
+
+console.log(dbConfig.HOST);
 
 // Test the database connection
 sequelize.authenticate()

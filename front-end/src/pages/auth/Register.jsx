@@ -3,8 +3,11 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Input, Checkbox, Button, Typography } from '@material-tailwind/react'
 import toast, { Toaster } from 'react-hot-toast'
 import axios from 'axios'
+import { useAuth } from '../../context/AuthContext'
 
 const Register = () => {
+
+    const { backendUrl } = useAuth();
 
     // Local state to handle form data
     const [formData, setFormData] = useState({
@@ -36,7 +39,7 @@ const Register = () => {
 
         try {
             // API call
-            const response = await axios.post("http://localhost:4000/register", {
+            const response = await axios.post(`${backendUrl}register`, {
                 name: formData.username,
                 email: formData.email,
                 password: formData.password,
