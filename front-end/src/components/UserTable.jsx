@@ -67,7 +67,7 @@ const UserTable = ({ users, onUpdate, onDelete }) => {
                                     <td className={className}>
                                         <div className="flex items-center gap-4">
                                             <Avatar
-                                                src={`/src/assets/img/${user.role}.jpeg`}
+                                                src={`public/img/${user.role}.jpeg`}
                                                 alt={user.name}
                                                 size="sm"
                                                 variant="rounded"

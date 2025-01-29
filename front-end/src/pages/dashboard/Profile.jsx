@@ -87,9 +87,9 @@ const Profile = () => {
     };
 
     const roleAvatars = {
-        admin: '/src/assets/img/admin.jpeg',
-        lecturer: '/src/assets/img/lecturer.jpeg',
-        student: '/src/assets/img/student.jpeg'
+        admin: 'public/img/admin.jpeg',
+        lecturer: 'public/img/lecturer.jpeg',
+        student: 'public/img/student.jpeg'
     };
 
     if (loading || !user) return (
@@ -108,7 +108,7 @@ const Profile = () => {
 
     return (
         <>
-            <div className="relative mt-8 h-72 w-full overflow-hidden rounded-xl bg-[url('./assets/img/background-image.png')] bg-cover bg-center">
+            <div className="relative mt-8 h-72 w-full overflow-hidden rounded-xl bg-[url('public/img/background-image.png')] bg-cover bg-center">
                 <div className="absolute inset-0 h-full w-full bg-gray-900/75" />
             </div>
 

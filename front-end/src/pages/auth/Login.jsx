@@ -152,9 +152,10 @@ const Login = () => {
             </div>
             <div className="w-2/5 h-full hidden lg:block">
                 <img
-                    src="src/assets/img/pattern.png"
+                    src="public/img/pattern.png"
                     className="h-full w-full object-cover rounded-3xl"
                 />
+
             </div>
 
         </section>

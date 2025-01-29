@@ -135,7 +135,7 @@ const AssignmentDetails = () => {
 
     return (
         <>
-            <div className="relative mt-8 h-72 w-full overflow-hidden rounded-xl bg-[url('./assets/img/background-image.png')] bg-cover bg-center">
+            <div className="relative mt-8 h-72 w-full overflow-hidden rounded-xl bg-[url('public/img/background-image.png')] bg-cover bg-center">
                 <div className="absolute inset-0 h-full w-full bg-gray-900/75" />
             </div>
             <Card className="mx-3 -mt-16 mb-6 lg:mx-4 border border-blue-gray-100">
@@ -185,7 +185,7 @@ const AssignmentDetails = () => {
 
                         <div className="flex items-center gap-4">
                             <Avatar
-                                src="/src/assets/img/lecturer.jpeg"
+                                src="/public/img/lecturer.jpeg"
                                 alt={assignment.lecturer.name}
                                 size="md"
                                 variant="rounded"
@@ -258,7 +258,7 @@ const AssignmentDetails = () => {
                                                     <td className={className}>
                                                         <div className="flex items-center gap-4">
                                                             <Avatar
-                                                                src="/src/assets/img/student.jpeg"
+                                                                src="/public/img/student.jpeg"
                                                                 alt={student.name}
                                                                 size="sm"
                                                                 variant="rounded"
