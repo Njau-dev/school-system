@@ -11,7 +11,7 @@ const reportRoutes = require('./routes/reportRoutes')
 const dashboardRoutes = require('./routes/dashboardRoutes')
 
 app.use(cors({
-    origin: ['http://localhost:5174', 'http://localhost:5173'],
+    origin: ['http://localhost:5174', 'http://localhost:5173', 'https://school-system-beta.vercel.app'],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true
 }));
