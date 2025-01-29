@@ -63,5 +63,5 @@ app.use((err, req, res, next) => {
 // setting up a server
 app.listen(process.env.PORT || 4000, function () {
     console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode`);
-    console.log(`Listening on port ${PORT}`);
+    console.log(`Listening on port ${process.env.PORT}`);
 });
