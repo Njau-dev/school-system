@@ -11,16 +11,15 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "express": "^4.21.2",
     "nodemon": "^3.1.9"
   },
   "dependencies": {
+    "express": "^4.21.2",
     "axios": "^1.7.9",
     "backblaze-b2": "^1.7.0",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
-    "crypto": "^1.0.1",
     "dotenv": "^16.4.7",
     "http-errors": "^2.0.0",
     "joi": "^17.13.3",
