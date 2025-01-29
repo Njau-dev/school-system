@@ -103,7 +103,7 @@ const SubmissionDetails = () => {
 
     return (
         <>
-            <div className="relative mt-8 h-72 w-full overflow-hidden rounded-xl bg-[url('public/img/background-image.png')] bg-cover bg-center">
+            <div className="relative mt-8 h-72 w-full overflow-hidden rounded-xl bg-[url('/img/background-image.png')] bg-cover bg-center">
                 <div className="absolute inset-0 h-full w-full bg-gray-900/75" />
             </div>
             <div className="container mx-auto -mt-16 px-4 py-8">
@@ -173,7 +173,7 @@ const SubmissionDetails = () => {
                                 </div>
                                 <div className="flex items-center gap-4">
                                     <Avatar
-                                        src="/public/img/student.jpeg"
+                                        src="/img/student.jpeg"
                                         alt={submission.student.name}
                                         size="md"
                                         variant="rounded"

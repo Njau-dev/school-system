@@ -185,7 +185,7 @@ const AssignmentDetails = () => {
 
                         <div className="flex items-center gap-4">
                             <Avatar
-                                src="/public/img/lecturer.jpeg"
+                                src="/img/lecturer.jpeg"
                                 alt={assignment.lecturer.name}
                                 size="md"
                                 variant="rounded"
@@ -258,7 +258,7 @@ const AssignmentDetails = () => {
                                                     <td className={className}>
                                                         <div className="flex items-center gap-4">
                                                             <Avatar
-                                                                src="/public/img/student.jpeg"
+                                                                src="/img/student.jpeg"
                                                                 alt={student.name}
                                                                 size="sm"
                                                                 variant="rounded"
