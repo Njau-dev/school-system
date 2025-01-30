@@ -142,7 +142,7 @@ const AssignmentDetails = () => {
                 <CardBody className='p-4'>
                     {/* Assignment Info Section */}
                     <div className="mb-12">
-                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div className="flex flex-row sm:flex-row justify-between items-start sm:items-center gap-4">
                             <Typography variant="h3" color='blue-gray' className="mb-4 sm:mb-8 mt-3 text-2xl sm:text-3xl">
                                 Assignment Details
                             </Typography>
@@ -154,7 +154,6 @@ const AssignmentDetails = () => {
                                     onClick={() => setOpenDialog(true)}
                                 >
                                     <TrashIcon className="h-4 w-4" />
-                                    Delete Assignment
                                 </Button>
                             )}
                         </div>

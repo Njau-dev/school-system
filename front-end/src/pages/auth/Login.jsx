@@ -8,6 +8,7 @@ import { useAuth } from '../../context/AuthContext';
 const Login = () => {
 
     const { logIn, backendUrl } = useAuth();
+    const [loading, setLoading] = useState(false)
 
     // Local state to handle form data
     const [formData, setFormData] = useState({
@@ -15,8 +16,6 @@ const Login = () => {
         password: "",
         termsAccepted: false,
     });
-
-    const navigate = useNavigate();
 
     // Update formData state on input change
     const handleChange = (e) => {
@@ -31,6 +30,7 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
 
+        setLoading(true)
         if (!formData.termsAccepted) {
             toast.error("You must accept the Terms and Conditions!");
             return;
@@ -53,6 +53,8 @@ const Login = () => {
         } catch (error) {
             // Handle errors and show error message
             toast.error(error.response.data.error.message);
+        } finally {
+            setLoading(false);
         }
 
     };
@@ -120,8 +122,13 @@ const Login = () => {
                         }
                         containerProps={{ className: "-ml-2.5" }}
                     />
-                    <Button type='submit' className="mt-6" fullWidth>
-                        Sign In
+
+                    <Button type='submit' className="mt-6 flex justify-center gap-2" fullWidth>
+                        {loading ? (
+                            <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-gray-50 border-t-transparent" />
+                        ) : ('')
+                        }
+                        {loading ? 'Signing in...' : 'Sign In'}
                     </Button>
 
                     <div className="flex items-center justify-between gap-2 mt-6">

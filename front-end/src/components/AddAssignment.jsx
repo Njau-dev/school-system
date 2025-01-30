@@ -119,7 +119,7 @@ const AddAssignment = () => {
                                             disabled={loading}
                                         >
                                             {loading ? (
-                                                <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                                                <div className="h-5 w-5 animate-spin rounded-full border-b-2 border-gray-900 border-t-transparent" />
                                             ) : (
                                                 <DocumentPlusIcon className="h-5 w-5" />
                                             )}

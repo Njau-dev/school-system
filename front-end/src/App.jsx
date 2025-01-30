@@ -11,6 +11,7 @@ import Login from "./pages/auth/Login";
 import AssignmentDetails from "./components/AssignmentDetails";
 import AddAssignment from "./components/AddAssignment";
 import SubmitDetails from "./components/SubmitDetails";
+import { Analytics } from "@vercel/analytics/react";
 
 const App = () => {
   const { isAuthenticated, role } = useAuth();
@@ -21,33 +22,35 @@ const App = () => {
   };
 
   return (
-    <Routes>
-      {/* Public Routes */}
-      <Route path="/signup" element={<Register />} />
-      <Route path="/signin" element={<Login />} />
+    <>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/signup" element={<Register />} />
+        <Route path="/signin" element={<Login />} />
+        {/* Protected Routes - All wrapped in DashboardLayout */}
+        <Route
+          element={
+            <PrivateRoute>
+              <DashboardLayout />
+            </PrivateRoute>
+          }
+        >
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/assignments" element={<Assignments />} />
+          <Route path="/assignments/details/:id" element={<AssignmentDetails />} />
+          {role === 'lecturer' &&
+            <Route path="/addassignment" element={<AddAssignment />} />
+          }
+          <Route path="/submissions" element={<Submissions />} />
+          <Route path="/submissions/details/:id" element={<SubmitDetails />} />
+        </Route>
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/signin"} />} />
+      </Routes>
 
-      {/* Protected Routes - All wrapped in DashboardLayout */}
-      <Route
-        element={
-          <PrivateRoute>
-            <DashboardLayout />
-          </PrivateRoute>
-        }
-      >
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/assignments" element={<Assignments />} />
-        <Route path="/assignments/details/:id" element={<AssignmentDetails />} />
-        {role === 'lecturer' &&
-          <Route path="/addassignment" element={<AddAssignment />} />
-        }
-        <Route path="/submissions" element={<Submissions />} />
-        <Route path="/submissions/details/:id" element={<SubmitDetails />} />
-      </Route>
-
-      {/* Fallback */}
-      <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/signin"} />} />
-    </Routes>
+      <Analytics />
+    </>
   );
 };
 

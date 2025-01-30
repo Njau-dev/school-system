@@ -118,11 +118,11 @@ const SubmissionDetails = () => {
                                 </Typography>
                             </div>
                             <div className="space-y-4">
-                                <div className="flex gap-2 items-center">
+                                <div className="flex flex-col gap-2">
                                     <Typography variant="h6" color="blue-gray">Title:</Typography>
                                     <Typography>{assignment.title}</Typography>
                                 </div>
-                                <div className="flex gap-2 items-start">
+                                <div className="flex flex-col gap-2">
                                     <Typography variant="h6" color="blue-gray">Description:</Typography>
                                     <Typography className="text-gray-700">{assignment.description}</Typography>
                                 </div>
@@ -134,7 +134,7 @@ const SubmissionDetails = () => {
                                 </div>
                                 <div className="flex items-center gap-4">
                                     <Avatar
-                                        src="/public/img/lecturer.jpeg"
+                                        src="/img/lecturer.jpeg"
                                         alt={assignment.lecturer.name}
                                         size="md"
                                         variant="rounded"
@@ -213,7 +213,7 @@ const SubmissionDetails = () => {
                                         onClick={handleFileDownload}
                                     >
                                         <DocumentArrowDownIcon className="h-5 w-5" />
-                                        View Submission
+                                        <span className='hidden md:block'>View Submission</span>
                                     </Button>
                                     {role === 'lecturer' && !submission.graded && (
                                         <Button
@@ -223,7 +223,7 @@ const SubmissionDetails = () => {
                                             onClick={() => setGradeDialog(true)}
                                         >
                                             <PencilSquareIcon className="h-5 w-5" />
-                                            Grade Submission
+                                            <span className='hidden md:block'>Grade Submission</span>
                                         </Button>
                                     )}
                                 </div>
@@ -280,10 +280,11 @@ const SubmissionDetails = () => {
                             className="flex items-center gap-2"
                         >
                             {grading ? (
-                                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                                <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-gray-900 border-t-transparent" />
                             ) : (
                                 <PencilSquareIcon className="h-4 w-4" />
                             )}
+
                             {grading ? 'Submitting...' : 'Submit Grade'}
                         </Button>
                     </DialogFooter>

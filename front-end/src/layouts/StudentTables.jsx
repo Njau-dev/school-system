@@ -1,15 +1,6 @@
 import React, { useState } from 'react';
-import {
-    Card,
-    CardHeader,
-    CardBody,
-    Typography,
-    Avatar,
-    Tooltip,
-    Progress,
-    IconButton,
-} from "@material-tailwind/react";
-import { EllipsisVerticalIcon, CheckCircleIcon } from "@heroicons/react/24/solid";
+import { Card, CardHeader, CardBody, Typography, Progress, } from "@material-tailwind/react";
+import { CheckCircleIcon } from "@heroicons/react/24/solid";
 
 const StudentTables = ({ assignmentData, reportData, isLoading }) => {
     const [assignmentPage, setAssignmentPage] = useState(1);
@@ -83,7 +74,7 @@ const StudentTables = ({ assignmentData, reportData, isLoading }) => {
                             className="flex items-center gap-1 font-normal text-blue-gray-600"
                         >
                             <CheckCircleIcon strokeWidth={3} className="h-4 w-4 text-blue-gray-200" />
-                            {assignmentData?.length || 0} total assignments
+                            {assignmentData?.assignments.length || 0} total assignments
                         </Typography>
                     </div>
                 </CardHeader>
