@@ -12,10 +12,10 @@
 ## 🖥️ **Preview**  
 <div align="center">
   <strong>Role-Specific Dashboards</strong><br><br>
-  <img src="[your-screenshot-url]" width="30%" alt="Admin Dashboard" />
-  <img src="[your-screenshot-url]" width="30%" alt="Lecturer Dashboard" />  
-  <img src="[your-screenshot-url]" width="30%" alt="Student Dashboard" />
-</div>  
+  <img src="https://github.com/user-attachments/assets/cf42428d-57f9-4fe5-b1d3-178241f64c0b" width="30%" alt="Admin Dashboard" />
+  <img src="https://github.com/user-attachments/assets/c8cd9322-9eb0-4f59-bac2-6ce6d75c589c" width="30%" alt="Lecturer Dashboard" />  
+  <img src="https://github.com/user-attachments/assets/3479623a-d925-4759-9702-80cd78a5bf4d" width="30%" alt="Student Dashboard" />
+</div> 
 
 ---
 
