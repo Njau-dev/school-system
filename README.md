@@ -90,4 +90,11 @@ Storage	Backblaze B2 Cloud
 
 Distributed under the MIT License. See LICENSE for details.
 
-<div align="center"> <sub>Built with ❤️ by Jeff Njau</sub> <br> [![GitHub](https://img.shields.io/badge/View%20Code-GitHub-black?logo=github)](https://github.com/Njau-dev/school-system) <br> *Special thanks to Vercel, Render, and Railway for hosting support* </div>
+<div align="center"> 
+  <sub>Built with ❤️ by Jeff Njau</sub> <br> 
+  
+  [![GitHub](https://img.shields.io/badge/View_Code-GitHub-black?logo=github)](https://github.com/Njau-dev/school-system)
+
+  <br>
+  <em>Special thanks to Vercel, Render, and Railway for hosting support</em>
+</div>
