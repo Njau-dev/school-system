@@ -44,7 +44,7 @@ module.exports = {
     // Fetch all assignments for Students
     fetchAssignmentsForStudent: async (req, res, next) => {
         try {
-            const userId = req.user.id; // Assume student ID is retrieved from the authenticated user
+            const userId = req.user.id;
 
             // Fetch assignments with lecturer details
             const assignments = await Assignment.findAll({

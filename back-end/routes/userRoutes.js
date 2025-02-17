@@ -12,13 +12,13 @@ routes.post('/login', userController.loginUser);
 
 routes.get('/getuser', verifyAccessToken, userController.getUserById);
 
-//admin
+//admin - get users
 routes.get('/getallusers', verifyAccessToken, auth.restrict('student', 'lecturer'), userController.getAllUsers);
 
 //admin - update user role
 routes.patch('/updateuser/:userId', verifyAccessToken, auth.restrict('student', 'lecturer'), userController.updateUserRole);
 
-//admin
+//admin - delete user
 routes.delete('/deleteuser/:userId', verifyAccessToken, auth.restrict('student', 'lecturer'), userController.deleteUser);
 
 module.exports = routes;

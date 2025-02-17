@@ -19,7 +19,7 @@ const sequelize = new Sequelize(
     }
 });
 
-console.log(dbConfig.HOST);
+// console.log(dbConfig);
 
 // Test the database connection
 sequelize.authenticate()

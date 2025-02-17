@@ -3,7 +3,6 @@ const express = require('express');
 const cors = require('cors');
 const app = express()
 const path = require('path');
-
 const userRoutes = require('./routes/userRoutes')
 const assignmentRoutes = require('./routes/assignmentRoutes')
 const submitRoutes = require('./routes/submissionRoutes')
@@ -36,7 +35,7 @@ app.use((req, res, next) => {
 })
 
 
-//Error handler
+// handling 500 errors
 app.use((err, req, res, next) => {
     res.status(err.status || 500)
     res.send({

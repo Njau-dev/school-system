@@ -6,7 +6,7 @@ module.exports = {
     PASSWORD: process.env.PASSWORD,
     DB: process.env.DB,
     dialect: 'mysql',
-    port: process.env.PORT,
+    port: process.env.DBPORT,
     dialectOptions: {
         ssl: {
             require: true,
