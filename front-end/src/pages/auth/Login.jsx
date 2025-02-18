@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Input, Checkbox, Button, Typography } from '@material-tailwind/react'
+import { Input, Checkbox, Button, Typography, Dialog, DialogHeader, DialogBody, DialogFooter } from '@material-tailwind/react'
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
@@ -9,12 +9,14 @@ const Login = () => {
 
     const { logIn, backendUrl } = useAuth();
     const [loading, setLoading] = useState(false)
+    const [openDialog, setOpenDialog] = useState(false);
 
     // Local state to handle form data
     const [formData, setFormData] = useState({
         email: "",
         password: "",
         termsAccepted: false,
+        forgotPasswordEmail: ""
     });
 
     // Update formData state on input change
@@ -33,6 +35,7 @@ const Login = () => {
         setLoading(true)
         if (!formData.termsAccepted) {
             toast.error("You must accept the Terms and Conditions!");
+            setLoading(false);
             return;
         }
 
@@ -59,6 +62,26 @@ const Login = () => {
 
     };
 
+    // Function to handle forgot password
+    const handleForgotPassword = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.post(`${backendUrl}forgot-password`, {
+                email: formData.forgotPasswordEmail,
+            });
+
+            if (response.status === 200) {
+                toast.success(response.data.message);
+            }
+
+        } catch (error) {
+            // Handle errors and show error message
+            toast.error(error.response.data.error.message);
+        } finally {
+            setLoading(false);
+            setOpenDialog(false);
+        }
+    };
 
     return (
         <section className="m-8 flex gap-4">
@@ -145,7 +168,7 @@ const Login = () => {
                             containerProps={{ className: "-ml-2.5" }}
                         />
                         <Typography variant="small" className="font-medium text-gray-900">
-                            <a href="#">
+                            <a href="#" onClick={() => setOpenDialog(true)}>
                                 Forgot Password
                             </a>
                         </Typography>
@@ -165,6 +188,47 @@ const Login = () => {
 
             </div>
 
+            {/* Forgot Password Dialog */}
+            <Dialog open={openDialog} handler={() => setOpenDialog(false)}>
+                <DialogHeader>Forgot Password</DialogHeader>
+                <DialogBody>
+                    <Typography variant="paragraph" color="blue-gray" className="mb-4">
+                        Please enter your email address. We will send you an email to reset your password.
+                    </Typography>
+                    <Input
+                        size="lg"
+                        placeholder="name@mail.com"
+                        name='forgotPasswordEmail'
+                        value={formData.forgotPasswordEmail}
+                        onChange={handleChange}
+                        className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
+                        labelProps={{
+                            className: "before:content-none after:content-none",
+                        }}
+                    />
+                </DialogBody>
+                <DialogFooter>
+                    <Button
+                        variant="text"
+                        color="gray"
+                        onClick={() => setOpenDialog(false)}
+                        className="mr-1"
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="gradient"
+                        onClick={handleForgotPassword}
+                        className='flex flex-row-reverse gap-2'
+                    >
+                        {loading ? (
+                            <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-gray-50 border-t-transparent" />
+                        ) : ('')
+                        }
+                        {loading ? 'Sending Email...' : 'Send Email'}
+                    </Button>
+                </DialogFooter>
+            </Dialog>
         </section>
     );
 }
