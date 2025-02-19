@@ -25,7 +25,7 @@ module.exports = {
 
             const token = crypto.randomBytes(32).toString('hex');
             user.resetPasswordToken = token;
-            user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+            user.resetPasswordExpires = Date.now() + 36 * 60 * 60 * 1000;  // 36 hours
             await user.save();
 
             const mailOptions = {
@@ -35,10 +35,10 @@ module.exports = {
                 text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
                 Please click on the following link, or paste this into your browser to complete the process:\n\n
                 ${process.env.FRONTEND_BASE_URL}/reset-password/${token}\n\n
+                This Link will expire 36 hours from now\n\n
                 If you did not request this, please ignore this email and your password will remain unchanged.\n`,
             };
 
-            // console.log(transporter.sendMail(mailOptions));
             await transporter.sendMail(mailOptions);
             res.status(200).send({ message: 'Password reset email sent' });
         } catch (error) {
