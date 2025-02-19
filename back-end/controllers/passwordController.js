@@ -34,7 +34,7 @@ module.exports = {
                 subject: 'Password Reset',
                 text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
                 Please click on the following link, or paste this into your browser to complete the process:\n\n
-                http://${req.headers.host}/reset/${token}\n\n
+                ${process.env.FRONTEND_BASE_URL}/reset-password/${token}\n\n
                 If you did not request this, please ignore this email and your password will remain unchanged.\n`,
             };
 
@@ -52,14 +52,18 @@ module.exports = {
             const user = await User.findOne({
                 where: {
                     resetPasswordToken: token,
-                    resetPasswordExpires: { [Op.gt]: Date.now() },
+                    resetPasswordExpires: { [db.Op.gt]: Date.now() },
                 },
             });
             if (!user) {
                 throw createError.BadRequest("Password reset token is invalid or has expired");
             }
 
-            user.password = await bycrypt.hash(password, 10);
+            // hash password
+            const salt = await bycrypt.genSalt(12);
+            const hashedPwd = await bycrypt.hash(password, salt);
+
+            user.password = hashedPwd;
             user.resetPasswordToken = null;
             user.resetPasswordExpires = null;
             await user.save();

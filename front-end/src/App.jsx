@@ -8,6 +8,7 @@ import Submissions from "./pages/dashboard/Submissions";
 import Profile from "./pages/dashboard/Profile";
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
+import ResetPassword from "./pages/auth/ResetPassword";
 import AssignmentDetails from "./components/AssignmentDetails";
 import AddAssignment from "./components/AddAssignment";
 import SubmitDetails from "./components/SubmitDetails";
@@ -27,6 +28,8 @@ const App = () => {
         {/* Public Routes */}
         <Route path="/signup" element={<Register />} />
         <Route path="/signin" element={<Login />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+
         {/* Protected Routes - All wrapped in DashboardLayout */}
         <Route
           element={
